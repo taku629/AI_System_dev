@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rehavision — 歩行訓練プロジェクション デモ</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo">Reha<span class="accent">Vision</span></div>
+    <div class="subtitle">床面プロジェクション シミュレーター</div>
+  </header>
+
+  <main class="stage-wrap">
+    <section class="projection-floor" id="projection-floor" aria-live="polite">
+      <div class="floor-content">
+        <h1 class="instruction" id="instruction">本日の動作①</h1>
+        <p class="sub-instruction" id="sub-instruction">前に歩く！</p>
+
+        <div class="walk-track" id="walk-track">
+          <div class="track-line"></div>
+          <div class="footprint fp-1"></div>
+          <div class="footprint fp-2"></div>
+          <div class="footprint fp-3"></div>
+          <div class="footprint fp-4"></div>
+          <div class="footprint fp-5"></div>
+          <figure class="walker" id="walker" aria-hidden="true">
+            <svg viewBox="0 0 64 100" width="64" height="100">
+              <circle cx="32" cy="12" r="10" fill="currentColor" />
+              <path d="M32 22 L32 58 M32 30 L14 46 M32 30 L50 46 M32 58 L16 92 M32 58 L48 88"
+                    stroke="currentColor" stroke-width="7" stroke-linecap="round" fill="none" />
+            </svg>
+          </figure>
+        </div>
+
+        <div class="counter" id="counter">
+          <span id="count-value">0</span><span class="count-max">/5</span>
+        </div>
+
+        <div class="feedback-bubble" id="feedback-bubble" hidden></div>
+      </div>
+    </section>
+
+    <aside class="tablet-panel">
+      <div class="tablet">
+        <div class="tablet-titlebar">作業療法士向けタブレット（AIアシスタント）</div>
+        <div class="tablet-body">
+          <div class="tablet-row"><span class="dot"></span>リハビリ記録の確認</div>
+          <div class="tablet-row"><span class="dot"></span>評価結果の要約</div>
+          <div class="tablet-row"><span class="dot"></span>家族への説明文作成</div>
+          <div class="tablet-row"><span class="dot"></span>記録作成のサポート</div>
+          <div class="tablet-log" id="tablet-log">
+            <p class="log-placeholder">訓練を開始すると、ここにAIによる記録メモが表示されます。</p>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="controls">
+    <button id="start-btn" class="btn btn-primary">訓練を開始する</button>
+    <button id="reset-btn" class="btn btn-secondary">リセット</button>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
