@@ -102,8 +102,8 @@ function loadVoices() {
   els.voiceSelect.innerHTML = "";
 
   if (!window.speechSynthesis) {
-    els.ttsNote.textContent = "このブラウザは音声合成に対応していません。読み上げは外部ツールを使ってください。";
-    els.ttsNote.classList.add("warn");
+    els.ttsNote.textContent = "音声合成に非対応のブラウザです";
+    els.ttsNote.title = "読み上げは VOICEVOX 等で作った音声ファイルを手動再生してください。";
     els.speakToggle.checked = false;
     els.speakToggle.disabled = true;
     return;
@@ -113,9 +113,9 @@ function loadVoices() {
     const opt = document.createElement("option");
     opt.textContent = "日本語音声なし";
     els.voiceSelect.appendChild(opt);
-    els.ttsNote.textContent =
-      "日本語の音声が見つかりません。OSに日本語音声を追加するか、VOICEVOX等で作った音声ファイルを手動再生してください。";
-    els.ttsNote.classList.add("warn");
+    els.ttsNote.textContent = "日本語音声が未インストール";
+    els.ttsNote.title =
+      "OSに日本語音声を追加するか、VOICEVOX等で作った音声ファイルを手動再生してください。";
     return;
   }
 
@@ -126,7 +126,7 @@ function loadVoices() {
     els.voiceSelect.appendChild(opt);
   });
   els.ttsNote.textContent = "";
-  els.ttsNote.classList.remove("warn");
+  els.ttsNote.title = "";
 }
 
 function speak(text) {
@@ -350,7 +350,7 @@ function importJson(file) {
    ------------------------------------------------------------------ */
 
 function setLinkStatus(connected) {
-  els.linkStatus.textContent = connected ? "ディスプレイ接続中" : "ディスプレイ未接続";
+  els.linkStatus.textContent = connected ? "接続中" : "未接続";
   els.linkStatus.classList.toggle("connected", connected);
 }
 
