@@ -5,16 +5,17 @@
 人工知能システム開発 第7班による、`AI for Omni-Care` 向け新機能提案「Rehavision」のデモ実装。
 理学療法士・作業療法士の負担軽減とリハビリ効果の可視化を目的とした、天井カメラ・LiDAR・床面プロジェクション・LLM(RAG)・音声UIを組み合わせたシステムを想定している。
 
-企画の詳細は [`docs/concept.md`](./docs/concept.md)、課題要件は [`docs/requirements.md`](./docs/requirements.md) を参照。
+企画の詳細は [`docs/concept.md`](./docs/concept.md)、課題要件は [`docs/requirements.md`](./docs/requirements.md)、
+発表本番の台本は [`docs/demo-script.md`](./docs/demo-script.md) を参照。
 
 ## ディレクトリ構成
 
 ```
 rehavision/
-├── docs/               企画概要・課題要件のまとめ
-├── prompts/            Prompt Template / Reference（課題の命名規則: 班番号_prompt.txt 等）
+├── docs/               企画概要・課題要件のまとめ・プレゼン台本
+├── prompts/            Prompt Template / Reference / WOZコーパスのたたき台
 ├── notebook/            Google Colab対応デモNotebook（Gemini API + TTS）
-├── backend/             Colab外でも使えるPythonモジュール（notebookと同等ロジック）
+├── backend/             Colab外でも使えるPythonモジュール（notebookと同等ロジック）＋オフライン検証テスト
 └── demo-ui/              歩行訓練プロジェクションのUIシミュレーター（静的HTML/CSS/JS）
 ```
 
@@ -64,5 +65,17 @@ python3 -m http.server 8000
 
 - `prompts/07_prompt.txt`: ハルシネーション対策（情報にない内容は断定しない）と、TTS読み上げに適した話し言葉フォーマットを指定
 - `prompts/07_reference.txt`: 想定患者（田中さん・仮名）のリハビリ記録・生活注意事項を記載したRAG用参照データ
+- `prompts/woz_corpus_starter.md`: WOZ対話収集で得られる想定問答のたたき台（実収録データに差し替えていく前提）
 
 本番の審査員質問に対応するため、`prompts/` 配下のファイルを差し替えるだけでテンプレート・参照情報を更新できる構成にしている。
+
+## APIキーなしでの動作検証
+
+```bash
+cd rehavision/backend
+python3 test_offline.py
+```
+
+`google.generativeai` をモックに差し替え、`GOOGLE_API_KEY` なしで
+プロンプト組み立て・モデルフォールバック処理のロジックを検証できる。
+実際のGemini応答の品質確認は、Colab上で本物のAPIキーを使って行うこと。
