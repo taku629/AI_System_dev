@@ -11,6 +11,7 @@
 | [`docs/requirements.md`](./docs/requirements.md) | 課題要件のまとめ |
 | [`docs/evaluation.md`](./docs/evaluation.md) | 評価結果（RAG有無のA/B比較・ルーブリック評価） |
 | [`docs/demo-script.md`](./docs/demo-script.md) | 発表本番（7分）の台本 |
+| [`docs/teams-demo.md`](./docs/teams-demo.md) | **オンライン（Teams）でのデモ手順。音声共有の設定が必須** |
 | [`docs/demo-checklist.md`](./docs/demo-checklist.md) | **本番前の準備チェックリスト（未検証項目あり・要確認）** |
 
 > **⚠️ 重要**: このリポジトリのコードは**実際のGemini APIキーで未検証**です。
