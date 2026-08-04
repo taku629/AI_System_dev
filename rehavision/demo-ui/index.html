@@ -7,62 +7,105 @@
 <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="app-header">
-    <div class="logo">Reha<span class="accent">Vision</span></div>
-    <div class="subtitle">床面プロジェクション シミュレーター</div>
-  </header>
+  <main class="stage">
 
-  <main class="stage-wrap">
-    <section class="projection-floor" id="projection-floor" aria-live="polite">
-      <div class="floor-content">
-        <h1 class="instruction" id="instruction">本日の動作①</h1>
-        <p class="sub-instruction" id="sub-instruction">前に歩く！</p>
+    <!-- 床面に投影される映像 -->
+    <section class="floor" id="floor">
+      <div class="light-cone" aria-hidden="true"></div>
 
-        <div class="walk-track" id="walk-track">
-          <div class="track-line"></div>
-          <div class="footprint fp-1"></div>
-          <div class="footprint fp-2"></div>
-          <div class="footprint fp-3"></div>
-          <div class="footprint fp-4"></div>
-          <div class="footprint fp-5"></div>
-          <figure class="walker" id="walker" aria-hidden="true">
-            <svg viewBox="0 0 64 100" width="64" height="100">
-              <circle cx="32" cy="12" r="10" fill="currentColor" />
-              <path d="M32 22 L32 58 M32 30 L14 46 M32 30 L50 46 M32 58 L16 92 M32 58 L48 88"
-                    stroke="currentColor" stroke-width="7" stroke-linecap="round" fill="none" />
-            </svg>
-          </figure>
+      <div class="projected">
+        <p class="cue" id="cue">まっすぐ進みましょう</p>
+
+        <div class="track" aria-hidden="true">
+          <div class="footprint" style="--i:5"></div>
+          <div class="footprint" style="--i:4"></div>
+          <div class="footprint" style="--i:3"></div>
+          <div class="footprint" style="--i:2"></div>
+          <div class="footprint" style="--i:1"></div>
         </div>
 
-        <div class="counter" id="counter">
-          <span id="count-value">0</span><span class="count-max">/5</span>
+        <div class="alert" id="alert" hidden>
+          <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
+            <path d="M12 3 L22 20 H2 Z M12 10 v4 M12 17 v.5" />
+          </svg>
+          <span id="alert-text"></span>
         </div>
 
-        <div class="feedback-bubble" id="feedback-bubble" hidden></div>
+        <figure class="walker" id="walker" aria-hidden="true">
+          <svg viewBox="0 0 64 104" width="58" height="94">
+            <circle cx="32" cy="12" r="11" />
+            <path d="M32 23 L32 60 M32 32 L13 48 M32 32 L51 48 M32 60 L15 96 M32 60 L49 92" />
+          </svg>
+        </figure>
+
+        <div class="step-count" id="step-count">
+          <b id="step-now">0</b><span>/ 5</span>
+        </div>
       </div>
+
     </section>
 
-    <aside class="tablet-panel">
-      <div class="tablet">
-        <div class="tablet-titlebar">作業療法士向けタブレット（AIアシスタント）</div>
-        <div class="tablet-body">
-          <div class="tablet-row"><span class="dot"></span>リハビリ記録の確認</div>
-          <div class="tablet-row"><span class="dot"></span>評価結果の要約</div>
-          <div class="tablet-row"><span class="dot"></span>家族への説明文作成</div>
-          <div class="tablet-row"><span class="dot"></span>記録作成のサポート</div>
-          <div class="tablet-log" id="tablet-log">
-            <p class="log-placeholder">訓練を開始すると、ここにAIによる記録メモが表示されます。</p>
+    <!-- 作業療法士のタブレット -->
+    <aside class="panel">
+      <div class="patient">
+        <span class="patient-name">田中 一郎</span>
+        <span class="patient-meta">右大腿骨頸部骨折 術後・回復期</span>
+      </div>
+
+      <div class="gauge-block">
+        <div class="gauge">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <circle class="gauge-bg" cx="60" cy="60" r="52" />
+            <circle class="gauge-fg" id="gauge-fg" cx="60" cy="60" r="52" />
+          </svg>
+          <div class="gauge-value"><b id="gauge-num">0</b><i>/5</i></div>
+        </div>
+        <span class="gauge-label">本日の歩数</span>
+      </div>
+
+      <div class="metric">
+        <div class="metric-head">
+          <span>歩行安定度</span>
+          <b id="stability-num">—</b>
+        </div>
+        <div class="meter"><i id="stability-bar"></i></div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-head"><span>1歩ごとの判定</span></div>
+        <div class="dots" id="dots">
+          <i></i><i></i><i></i><i></i><i></i>
+        </div>
+      </div>
+
+      <div class="metric">
+        <div class="metric-head"><span>前回との比較</span></div>
+        <div class="bars">
+          <div class="bar-row">
+            <span class="bar-key">前回</span>
+            <div class="bar"><i style="width:60%"></i></div>
+            <b class="bar-val">3</b>
+          </div>
+          <div class="bar-row now">
+            <span class="bar-key">本日</span>
+            <div class="bar"><i id="bar-today" style="width:0%"></i></div>
+            <b class="bar-val" id="bar-today-val">0</b>
           </div>
         </div>
       </div>
+
+      <div class="result" id="result" hidden>
+        <span class="result-label">次回目標</span>
+        <b class="result-value">7 歩</b>
+      </div>
+
+      <div class="controls">
+        <button id="start" class="btn">訓練を開始</button>
+        <button id="reset" class="btn ghost">リセット</button>
+      </div>
     </aside>
+
   </main>
-
-  <div class="controls">
-    <button id="start-btn" class="btn btn-primary">訓練を開始する</button>
-    <button id="reset-btn" class="btn btn-secondary">リセット</button>
-  </div>
-
   <script src="app.js"></script>
 </body>
 </html>
