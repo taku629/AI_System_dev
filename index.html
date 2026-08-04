@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rehavision — デモ一覧</title>
+<style>
+  :root {
+    --navy: #0f1b3d;
+    --navy-deep: #070d22;
+    --blue: #3b82f6;
+    --blue-light: #93c5fd;
+    --ink: #0f172a;
+    --muted: #64748b;
+    --line: #e2e8f0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(ellipse at 50% -10%, var(--navy) 0%, var(--navy-deep) 70%);
+    color: #fff;
+    font-family: "Hiragino Sans", "Yu Gothic UI", "Segoe UI", system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2.5rem 1.5rem;
+  }
+  .wrap { width: min(880px, 100%); }
+  h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; margin: 0 0 0.3rem; letter-spacing: 0.01em; }
+  h1 .accent { color: var(--blue-light); }
+  .tagline { color: var(--blue-light); margin: 0 0 0.4rem; font-size: 1.05rem; }
+  .team { color: rgba(255,255,255,0.5); margin: 0 0 2.5rem; font-size: 0.88rem; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+  .card {
+    display: block;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 16px;
+    padding: 1.4rem 1.5rem;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+  .card:hover { background: rgba(255,255,255,0.12); transform: translateY(-2px); }
+  .card-label { font-size: 0.75rem; color: var(--blue-light); font-weight: 700; letter-spacing: 0.08em; }
+  .card-title { font-size: 1.15rem; font-weight: 700; margin: 0.4rem 0 0.5rem; }
+  .card-desc { font-size: 0.87rem; line-height: 1.65; color: rgba(255,255,255,0.7); margin: 0; }
+  .note {
+    margin-top: 2rem;
+    padding: 1rem 1.2rem;
+    border-radius: 12px;
+    background: rgba(255,255,255,0.05);
+    font-size: 0.84rem;
+    line-height: 1.7;
+    color: rgba(255,255,255,0.65);
+  }
+  .note a { color: var(--blue-light); }
+  code {
+    background: rgba(255,255,255,0.1);
+    padding: 0.1rem 0.35rem;
+    border-radius: 4px;
+    font-size: 0.92em;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Reha<span class="accent">Vision</span></h1>
+    <p class="tagline">AIが導き、回復を支えるスマートリハビリ環境</p>
+    <p class="team">人工知能システム開発 第7班</p>
+
+    <div class="cards">
+      <a class="card" href="rehavision/demo-ui/">
+        <span class="card-label">DEMO 1</span>
+        <h2 class="card-title">歩行訓練プロジェクション</h2>
+        <p class="card-desc">
+          床面に投影される歩行ガイドと、AIによるリアルタイムのフィードバックを再現。
+          右側には作業療法士向けタブレットの記録が自動で溜まっていきます。
+        </p>
+      </a>
+
+      <a class="card" href="rehavision/woz-tool/operator.html">
+        <span class="card-label">TOOL</span>
+        <h2 class="card-title">WOZ収録ツール</h2>
+        <p class="card-desc">
+          Wizard of OZ方式で対話コーパスを収集するためのオペレータ卓。
+          応答を送るたびに、質問・応答・カテゴリの表に自動で記録されます。
+        </p>
+      </a>
+    </div>
+
+    <div class="note">
+      対話デモ（Gemini API + 音声読み上げ）は Google Colab で実行します。
+      手順は <a href="https://github.com/taku629/AI_System_dev/tree/main/rehavision">rehavision/README.md</a> を参照してください。
+      <br />
+      WOZツールは <code>operator.html</code> を開いたあと「ユーザ役用ディスプレイを開く」を押すと2画面構成になります。
+    </div>
+  </div>
+</body>
+</html>
