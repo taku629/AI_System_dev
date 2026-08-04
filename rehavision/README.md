@@ -52,7 +52,7 @@ from gemini_client import configure_api_key, ask_custom_llm, build_prompt
 from tts import synthesize_speech
 
 configure_api_key()
-prompt = build_prompt("../prompts/07_prompt.txt", "../prompts/07_reference.txt", "田中さんはコーヒー飲めますか？")
+prompt = build_prompt("../prompts/07_prompt.txt", "../prompts/07_reference.txt", "リハビリの効果は出ている？")
 answer = ask_custom_llm(prompt)
 print(answer)
 synthesize_speech(answer, "answer.mp3")
