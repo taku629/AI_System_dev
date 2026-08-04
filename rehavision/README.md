@@ -36,10 +36,22 @@ rehavision/
 
 ### Google Colabで実行する場合
 
-1. `notebook/rehavision_demo.ipynb` をColabで開く（GitHubからそのまま開くか、リポジトリをclone）
-2. Colabの鍵アイコン（Secrets）で `GOOGLE_API_KEY` を登録し、Notebook access をONにする
-3. 上から順にセルを実行する。`prompts/07_prompt.txt` / `07_reference.txt` が同じリポジトリ内にあれば自動的に読み込まれる（無い場合はNotebook内蔵のテンプレートにフォールバック）
+**このリンクを開くだけで起動できる。**
+
+https://colab.research.google.com/github/taku629/AI_System_dev/blob/main/rehavision/notebook/rehavision_demo.ipynb
+
+1. 上のリンクでColabを開く
+2. Colabの鍵アイコン（Secrets）で `GOOGLE_API_KEY` を登録し、**Notebook access をONにする**
+3. 上から順にセルを実行する
 4. 「質問応答デモ」セルの `question` を書き換えると、任意の質問で試せる
+
+Prompt Template と Reference は、実行環境に応じて自動的に解決される。
+
+| 実行場所 | 読み込み元 |
+|---|---|
+| リポジトリ内（ローカル） | 手元の `prompts/*.txt`（編集がそのまま反映される） |
+| Colab（.ipynbのみ） | リポジトリを自動でcloneして取得 |
+| ネットワーク不通 | Notebook内蔵のコピー |
 
 ### ローカル/CLIで実行する場合
 
