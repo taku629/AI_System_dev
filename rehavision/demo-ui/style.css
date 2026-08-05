@@ -36,134 +36,124 @@ body {
   .floor { height: 66vh; }
 }
 
-/* ---------------- 床面投影 ---------------- */
+/* ---------------- 床面投影 ----------------
+   プロジェクターが真上から照らしている想定のため、遠近感は付けず平面で描く。
+   配色はストーリーボード（黒地・シアン #00B0F0・白文字・黄色の警告）に合わせる。
+   ------------------------------------------ */
 
 .floor {
   position: relative;
   overflow: hidden;
-  background: radial-gradient(120% 80% at 50% 0%, #16204a 0%, var(--floor) 45%, var(--bg) 100%);
+  background: #000;
+  color: #fff;
 }
 
-/* プロジェクターの光が床に落ちている見た目 */
-.light-cone {
+.title {
   position: absolute;
+  top: 5%;
   left: 50%;
-  top: -8%;
-  width: 92%;
-  height: 116%;
   transform: translateX(-50%);
-  background: linear-gradient(to bottom, rgba(247,233,196,.13), rgba(247,233,196,.03) 55%, transparent 78%);
-  clip-path: polygon(38% 0%, 62% 0%, 100% 100%, 0% 100%);
-  filter: blur(2px);
-}
-
-.projected {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: .04em;
+  white-space: nowrap;
 }
 
 .cue {
   position: absolute;
-  top: 7%;
-  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(1rem, 2vw, 1.5rem);
   font-weight: 700;
-  letter-spacing: .06em;
-  color: #eaf2ff;
-  text-shadow: 0 0 22px rgba(96,165,250,.55);
-  transition: opacity .3s ease;
+  letter-spacing: .05em;
+  white-space: nowrap;
+  transition: opacity .25s ease;
 }
 
-/* 奥ほど小さく暗くして、床に投影された遠近感を出す */
+/* 歩く方向を示す矢印と足跡の列 */
 .track {
-  position: relative;
-  width: 340px;
-  height: 62%;
-  margin-top: 4%;
-}
-
-.footprint {
   position: absolute;
   left: 50%;
-  bottom: calc((var(--i) - 1) * 21%);
-  width: calc(30px - (var(--i) - 1) * 2.6px);
-  height: calc(44px - (var(--i) - 1) * 4px);
-  border-radius: 50% 50% 42% 42%;
-  border: 1.5px solid rgba(94,234,212,.35);
-  background: rgba(94,234,212,.05);
-  transition: background .3s ease, border-color .3s ease, box-shadow .3s ease;
-  /* 奥へ行くほど中央に寄せ、左右交互に並べる */
-  transform: translateX(-50%) translateX(var(--dx));
+  bottom: 8%;
+  transform: translateX(-50%);
+  width: 260px;
+  height: 62%;
 }
 
-/* DOM順は奥(--i:5)から手前(--i:1)。奇数番目が左足、偶数番目が右足になる */
-.footprint:nth-child(odd)  { --dx: calc(-36px + (var(--i) - 1) * 4px); }
-.footprint:nth-child(even) { --dx: calc( 36px - (var(--i) - 1) * 4px); }
+.arrow {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 0; height: 0;
+  transform: translateX(-50%);
+  border-left: 20px solid transparent;
+  border-right: 20px solid transparent;
+  border-bottom: 30px solid #00B0F0;
+  opacity: .85;
+}
 
-.footprint.on {
-  background: rgba(94,234,212,.5);
-  border-color: var(--cyan);
-  box-shadow: 0 0 26px rgba(94,234,212,.55);
+/* 素材は左右の足が並んだ1枚絵。半分ずつ切り出して片足として使う */
+.fp {
+  position: absolute;
+  bottom: calc(6% + (var(--i) - 1) * 17%);
+  width: 52px;
+  height: 78px;
+  background-image: url("assets/footprints.png");
+  background-repeat: no-repeat;
+  background-size: 200% 100%;
+  opacity: .22;
+  transition: opacity .25s ease, filter .25s ease;
+}
+.fp.l { left: calc(50% - 58px); background-position: 0% 50%; }
+.fp.r { left: calc(50% + 6px);  background-position: 100% 50%; }
+
+.fp.on {
+  opacity: 1;
+  filter: drop-shadow(0 0 14px rgba(0,176,240,.9));
 }
 
 .walker {
   position: absolute;
   left: 50%;
-  bottom: 16%;
+  bottom: 6%;
+  width: clamp(90px, 11vw, 140px);
+  height: clamp(90px, 11vw, 140px);
   transform: translateX(-50%);
+  background: url("assets/walk.svg") center / contain no-repeat;
   transition: bottom .55s cubic-bezier(.4,0,.2,1);
+  filter: drop-shadow(0 0 18px rgba(0,176,240,.55));
 }
-
-.walker svg {
-  fill: none;
-  stroke: #dbeafe;
-  stroke-width: 7;
-  stroke-linecap: round;
-  filter: drop-shadow(0 0 14px rgba(147,197,253,.7));
-}
-.walker svg circle { fill: #dbeafe; stroke: none; }
 
 .step-count {
   position: absolute;
-  left: 5%;
-  bottom: 7%;
+  left: 4%;
+  bottom: 6%;
   display: flex;
   align-items: baseline;
   gap: .35rem;
-  color: #fff;
 }
 .step-count b {
-  font-size: clamp(3.5rem, 8vw, 6rem);
+  font-size: clamp(3rem, 7vw, 5rem);
   font-weight: 800;
   line-height: .9;
   font-variant-numeric: tabular-nums;
-  text-shadow: 0 0 34px rgba(96,165,250,.5);
 }
-.step-count span { font-size: 1.4rem; color: rgba(255,255,255,.4); font-weight: 600; }
+.step-count span { font-size: 1.3rem; color: rgba(255,255,255,.5); font-weight: 600; }
 
+/* ストーリーボードどおり黄色。床に投影されるため枠は付けない */
 .alert {
   position: absolute;
   left: 50%;
-  top: 16%;
+  top: 24%;
   transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: .5rem;
-  padding: .5rem .95rem;
-  border-radius: 999px;
-  background: rgba(120, 72, 6, .55);
-  border: 1px solid var(--amber);
-  color: #fff3c4;
-  font-size: .95rem;
+  color: #FFFF00;
+  font-size: clamp(1rem, 1.9vw, 1.35rem);
   font-weight: 700;
-  text-shadow: 0 0 14px rgba(251,191,36,.5);
   white-space: nowrap;
+  text-shadow: 0 0 18px rgba(255,255,0,.45);
   animation: pop .25s ease;
 }
-.alert svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
 
 @keyframes pop {
   from { opacity: 0; transform: translateX(-50%) translateY(6px); }

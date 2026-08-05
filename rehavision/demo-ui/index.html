@@ -9,39 +9,26 @@
 <body>
   <main class="stage">
 
-    <!-- 床面に投影される映像 -->
+    <!-- プロジェクターが真上から床に投影している映像。ストーリーボードの意匠に合わせている -->
     <section class="floor" id="floor">
-      <div class="light-cone" aria-hidden="true"></div>
 
-      <div class="projected">
-        <p class="cue" id="cue">まっすぐ進みましょう</p>
+      <h1 class="title">本日の動作①</h1>
+      <p class="cue" id="cue">まっすぐ進みましょう</p>
 
-        <div class="track" aria-hidden="true">
-          <div class="footprint" style="--i:5"></div>
-          <div class="footprint" style="--i:4"></div>
-          <div class="footprint" style="--i:3"></div>
-          <div class="footprint" style="--i:2"></div>
-          <div class="footprint" style="--i:1"></div>
-        </div>
-
-        <div class="alert" id="alert" hidden>
-          <svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true">
-            <path d="M12 3 L22 20 H2 Z M12 10 v4 M12 17 v.5" />
-          </svg>
-          <span id="alert-text"></span>
-        </div>
-
-        <figure class="walker" id="walker" aria-hidden="true">
-          <svg viewBox="0 0 64 104" width="58" height="94">
-            <circle cx="32" cy="12" r="11" />
-            <path d="M32 23 L32 60 M32 32 L13 48 M32 32 L51 48 M32 60 L15 96 M32 60 L49 92" />
-          </svg>
-        </figure>
-
-        <div class="step-count" id="step-count">
-          <b id="step-now">0</b><span>/ 5</span>
-        </div>
+      <div class="track" aria-hidden="true">
+        <div class="arrow"></div>
+        <div class="fp l" style="--i:5"></div>
+        <div class="fp r" style="--i:4"></div>
+        <div class="fp l" style="--i:3"></div>
+        <div class="fp r" style="--i:2"></div>
+        <div class="fp l" style="--i:1"></div>
       </div>
+
+      <figure class="walker" id="walker" aria-hidden="true"></figure>
+
+      <div class="step-count"><b id="step-now">0</b><span>/ 5</span></div>
+
+      <p class="alert" id="alert" hidden><span id="alert-text"></span></p>
 
     </section>
 

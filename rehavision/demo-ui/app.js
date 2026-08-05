@@ -9,12 +9,13 @@ const NEXT_GOAL = 7;
 const STABILITY = [null, 82, 46, 71, 86, 91];
 const WARN_BELOW = 60;
 
-// 歩行者の位置（bottom%）。奥に進むほど値が大きくなる。
-const WALKER_POS = [16, 27, 38, 49, 60, 71];
+// 歩行者の位置（floor基準のbottom%）。各足跡の位置に合わせてある。
+const WALKER_POS = [4, 12, 22, 33, 43, 54];
 
 const $ = (id) => document.getElementById(id);
 const el = {
   cue: $("cue"),
+  title: document.querySelector(".title"),
   walker: $("walker"),
   stepNow: $("step-now"),
   alert: $("alert"),
@@ -29,7 +30,7 @@ const el = {
   result: $("result"),
   start: $("start"),
   reset: $("reset"),
-  footprints: [...document.querySelectorAll(".footprint")].reverse(), // 手前→奥
+  footprints: [...document.querySelectorAll(".fp")].reverse(), // 手前→奥
   dotList: [...document.querySelectorAll("#dots i")],
 };
 
@@ -49,6 +50,7 @@ function showAlert(text) {
 }
 
 function reset() {
+  el.title.textContent = "本日の動作①";
   el.cue.textContent = "まっすぐ進みましょう";
   el.stepNow.textContent = "0";
   el.walker.style.bottom = `${WALKER_POS[0]}%`;
@@ -75,8 +77,10 @@ async function run() {
   reset();
   el.start.disabled = true;
 
-  el.cue.textContent = `本日の目標　${GOAL}歩`;
+  el.title.textContent = "本日の目標！";
+  el.cue.textContent = `「${GOAL}歩」前に進む！`;
   await sleep(1400);
+  el.title.textContent = "本日の動作①";
   el.cue.textContent = "まっすぐ進みましょう";
   await sleep(700);
 
@@ -103,14 +107,15 @@ async function run() {
     el.barTodayVal.textContent = String(step);
 
     if (s < WARN_BELOW) {
-      showAlert("左足の踏み出しが不安定です");
+      showAlert("左足の踏み出しが少し不安定です！");
     } else {
       el.alert.hidden = true;
     }
   }
 
   await sleep(900);
-  el.cue.textContent = `${PREV}歩 → ${GOAL}歩`;
+  el.title.textContent = "訓練終了";
+  el.cue.textContent = `前回よりもスムーズに歩けました！`;
   el.gaugeFg.classList.add("done");
   el.alert.hidden = true;
   el.result.hidden = false;
