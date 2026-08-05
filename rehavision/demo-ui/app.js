@@ -9,14 +9,10 @@ const NEXT_GOAL = 7;
 const STABILITY = [null, 82, 46, 71, 86, 91];
 const WARN_BELOW = 60;
 
-// 歩行者の位置（floor基準のbottom%）。各足跡の位置に合わせてある。
-const WALKER_POS = [4, 12, 22, 33, 43, 54];
-
 const $ = (id) => document.getElementById(id);
 const el = {
   cue: $("cue"),
   title: document.querySelector(".title"),
-  walker: $("walker"),
   stepNow: $("step-now"),
   alert: $("alert"),
   alertText: $("alert-text"),
@@ -53,7 +49,6 @@ function reset() {
   el.title.textContent = "本日の動作①";
   el.cue.textContent = "まっすぐ進みましょう";
   el.stepNow.textContent = "0";
-  el.walker.style.bottom = `${WALKER_POS[0]}%`;
   el.alert.hidden = true;
   el.footprints.forEach((f) => f.classList.remove("on"));
 
@@ -88,7 +83,6 @@ async function run() {
     await sleep(1000);
 
     el.stepNow.textContent = String(step);
-    el.walker.style.bottom = `${WALKER_POS[step]}%`;
     el.footprints[step - 1].classList.add("on");
 
     // ゲージ

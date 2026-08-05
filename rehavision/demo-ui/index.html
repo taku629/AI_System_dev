@@ -15,6 +15,13 @@
       <h1 class="title">本日の動作①</h1>
       <p class="cue" id="cue">まっすぐ進みましょう</p>
 
+      <!-- 左：歩行を示すピクトグラムと歩数（スライドの配置に合わせている） -->
+      <div class="left-col">
+        <figure class="walk-icon" aria-hidden="true"></figure>
+        <div class="step-count"><b id="step-now">0</b><span>/ 5</span></div>
+      </div>
+
+      <!-- 右：進む方向の足跡ガイド。踏むごとに点灯する -->
       <div class="track" aria-hidden="true">
         <div class="arrow"></div>
         <div class="fp l" style="--i:5"></div>
@@ -23,10 +30,6 @@
         <div class="fp r" style="--i:2"></div>
         <div class="fp l" style="--i:1"></div>
       </div>
-
-      <figure class="walker" id="walker" aria-hidden="true"></figure>
-
-      <div class="step-count"><b id="step-now">0</b><span>/ 5</span></div>
 
       <p class="alert" id="alert" hidden><span id="alert-text"></span></p>
 
