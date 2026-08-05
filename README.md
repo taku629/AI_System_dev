@@ -9,10 +9,20 @@
 | # | デモ | 触り方 | APIキー |
 |---|---|---|---|
 | 1 | 歩行訓練の床面投影 | ブラウザで開くだけ | 不要 |
-| 2 | WOZ収録ツール | ブラウザで開くだけ | 不要 |
-| 3 | AI対話（質問→回答→読み上げ） | Google Colab | **各自で必要** |
+| 2 | AI対話（質問→回答→読み上げ） | ブラウザ or Colab | **各自で必要** |
+| 3 | WOZ収録ツール | ブラウザで開くだけ | 不要 |
 
-### 1・2 をブラウザで開く
+AI対話は**ブラウザ版とColab版の2通り**ある。中身（Prompt Template・Reference・モデルのフォールバック）は同じ。
+
+| | ブラウザ版 | Colab版 |
+|---|---|---|
+| 起動 | サイトを開いてキーを貼るだけ | Colabを開いてセルを実行 |
+| 音声入力 | **マイクで話しかけられる** | テキスト入力 |
+| 用途 | **発表本番向け**（1画面で完結） | 課題の提出物・詳細な検証 |
+
+> 課題の提出物としてColab版が必要なため、Notebookは残してある。
+
+### ブラウザで開く
 
 https://taku629.github.io/AI_System_dev/
 
@@ -24,7 +34,10 @@ cd AI_System_dev && python3 -m http.server 8000
 # → http://localhost:8000
 ```
 
-### 3 をColabで開く
+**AI対話デモ**は開いた直後にAPIキーの入力を求められる。取得方法は下記。
+キーはブラウザ内（localStorage）にのみ保存され、リポジトリには含まれない。
+
+### Colabで開く
 
 [![Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/taku629/AI_System_dev/blob/main/rehavision/notebook/rehavision_demo.ipynb)
 

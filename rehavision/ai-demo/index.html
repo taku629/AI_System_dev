@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RehaVision — AI対話デモ</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- APIキーの入力。localStorageにのみ保存し、リポジトリには含めない -->
+<div class="gate" id="gate">
+  <div class="gate-box">
+    <h1>APIキーを入力</h1>
+    <input type="password" id="key-input" placeholder="AIza..." autocomplete="off" />
+    <button class="btn primary" id="key-save">開始</button>
+    <p class="gate-note">
+      キーはこのブラウザ内にのみ保存され、送信先は Google のAPIだけです。<br />
+      <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">キーを取得する</a>
+    </p>
+  </div>
+</div>
+
+<main class="app" id="app" hidden>
+
+  <header class="bar">
+    <span class="logo">Reha<b>Vision</b></span>
+    <span class="patient">田中 一郎 ／ 右大腿骨頸部骨折 術後・回復期</span>
+    <span class="spacer"></span>
+    <span class="model" id="model-label"></span>
+    <button class="btn ghost sm" id="key-clear">キー変更</button>
+  </header>
+
+  <section class="qa">
+    <div class="ask">
+      <textarea id="question" rows="2" placeholder="質問を入力、またはマイクで話しかける"></textarea>
+      <button class="btn mic" id="mic" title="音声で質問する">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+          <rect x="9" y="2" width="6" height="12" rx="3" />
+          <path d="M5 10a7 7 0 0 0 14 0" />
+          <line x1="12" y1="17" x2="12" y2="22" />
+        </svg>
+      </button>
+      <button class="btn primary" id="send">送信</button>
+    </div>
+
+    <div class="answer" id="answer-box">
+      <p class="placeholder" id="placeholder">質問すると、患者の記録に基づいてAIが答えます。</p>
+      <p class="answer-text" id="answer" hidden></p>
+      <div class="thinking" id="thinking" hidden><span></span><span></span><span></span></div>
+      <p class="error" id="error" hidden></p>
+    </div>
+
+    <div class="foot">
+      <label class="chk"><input type="checkbox" id="speak" checked /> 読み上げる</label>
+      <span class="spacer"></span>
+      <span class="src" id="src-label"></span>
+    </div>
+  </section>
+
+  <section class="samples">
+    <span class="samples-label">質問例</span>
+    <div id="samples"></div>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
