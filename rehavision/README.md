@@ -12,6 +12,7 @@
 | [`docs/evaluation.md`](./docs/evaluation.md) | 評価結果（RAG有無のA/B比較・ルーブリック評価） |
 | [`docs/demo-script.md`](./docs/demo-script.md) | 発表本番（7分）の台本 |
 | [`docs/teams-demo.md`](./docs/teams-demo.md) | **オンライン（Teams）でのデモ手順。音声共有の設定が必須** |
+| [`docs/qa-prep.md`](./docs/qa-prep.md) | **想定質疑と回答の組み立て（要調査の項目あり）** |
 | [`docs/demo-checklist.md`](./docs/demo-checklist.md) | **本番前の準備チェックリスト（未検証項目あり・要確認）** |
 
 > **⚠️ 重要**: このリポジトリのコードは**実際のGemini APIキーで未検証**です。
@@ -26,7 +27,8 @@ rehavision/
 ├── prompts/            Prompt Template / Reference / 評価用テストセット
 ├── notebook/            Google Colab対応デモNotebook（Gemini API + TTS）
 ├── backend/             Colab外でも使えるPythonモジュール（notebookと同等ロジック）＋オフライン検証テスト
-├── demo-ui/              歩行訓練プロジェクションのUIシミュレーター（静的HTML/CSS/JS）
+├── demo-ui/              歩行訓練の床面投影シミュレーター（静的HTML/CSS/JS）
+├── ai-demo/              ブラウザ版のAI対話デモ（Gemini APIを直接呼ぶ）
 └── woz-tool/             WOZ収録ツール（オペレータ卓＋ユーザ役用ディスプレイ）
 ```
 
@@ -71,18 +73,28 @@ synthesize_speech(answer, "answer.mp3")
 PY
 ```
 
-## 2. 歩行訓練プロジェクション シミュレーター
+### ブラウザで実行する場合（発表本番向け）
 
-実機（天井カメラ・LiDAR・プロジェクター）の代わりに、床面投影のUIをブラウザ上で再現したデモ。
-pptxストーリーボード（「本日の動作①／まっすぐ進みましょう／0→5歩」＋AIフィードバック）を実装している。
+`ai-demo/` を開き、画面の指示に従ってAPIキーを入力する。Colabを開かずに
+質問から読み上げまで完結し、**マイクでの音声入力にも対応**している。
+
+Prompt Template と Reference は `prompts/` から読み込むため、**Colab版と同じ応答になる**。
+キーはブラウザのlocalStorageにのみ保存され、リポジトリには含まれない。
+
+## 2. 歩行訓練の床面投影シミュレーター
+
+実機（天井カメラ・LiDAR・プロジェクター）の代わりに、床面に投影される映像をブラウザで再現したデモ。
+プロジェクターで真上から照らす想定のため遠近感は付けず、配色と素材は
+班のストーリーボード（黒地・シアン・黄色の警告）から取り込んでいる。
 
 ```bash
 cd rehavision/demo-ui
 python3 -m http.server 8000
-# ブラウザで http://localhost:8000 を開き、「訓練を開始する」を押す
+# ブラウザで http://localhost:8000 を開き、「訓練を開始」を押す
 ```
 
-画面左が床面投影のシミュレーション（歩行ガイド・歩数カウント・AIフィードバック）、右が作業療法士向けタブレット（AIアシスタント）のログ表示。
+画面左が床面投影（歩行ピクトグラム・足跡ガイド・歩数）、
+右が作業療法士のタブレット（進捗リング・歩行安定度・1歩ごとの判定・前回との比較）。
 
 ## 3. WOZ収録ツール
 

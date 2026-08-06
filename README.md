@@ -59,6 +59,7 @@ cd AI_System_dev && python3 -m http.server 8000
 | [`rehavision/docs/concept.md`](./rehavision/docs/concept.md) | 企画概要 |
 | [`rehavision/docs/evaluation.md`](./rehavision/docs/evaluation.md) | 評価結果（RAG有無のA/B比較） |
 | [`rehavision/docs/demo-script.md`](./rehavision/docs/demo-script.md) | 発表7分の台本 |
+| [`rehavision/docs/qa-prep.md`](./rehavision/docs/qa-prep.md) | 想定質疑と回答の組み立て |
 | [`rehavision/docs/teams-demo.md`](./rehavision/docs/teams-demo.md) | オンライン発表の手順 |
 | [`rehavision/docs/demo-checklist.md`](./rehavision/docs/demo-checklist.md) | 本番前チェックリスト |
 | [`rehavision/woz-tool/README.md`](./rehavision/woz-tool/README.md) | WOZ収録のやり方 |
