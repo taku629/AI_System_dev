@@ -13,22 +13,20 @@ const deviceScreen = document.getElementById("device-screen");
 
 const statusLabel = document.getElementById("device-status");
 
-const openOperatorBtn = document.getElementById("open-operator-btn");
+//const openOperatorBtn = document.getElementById("open-operator-btn");
 const askAgainBtn = document.getElementById("ask-again-btn");
 
 const views = {
-  idle: document.getElementById("idle-view"),
-  thinking: document.getElementById("thinking-view"),
-  answer: document.getElementById("answer-view"),
+    idle: document.getElementById("idle-view"),
+    thinking: document.getElementById("thinking-view"),
+    answer: document.getElementById("answer-view"),
 };
 
 const idleText = document.querySelector(".idle-text");
 const thinkingText = document.querySelector(".thinking-text");
 const answerText = document.getElementById("answer-text");
 
-const SR =
-  window.SpeechRecognition ||
-  window.webkitSpeechRecognition;
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 let recognition = null;
 
@@ -44,67 +42,57 @@ let lastOperatorResponse = 0;
 // ------------------------------------------------------------------
 
 function setOperatorConnected(connected) {
+    operatorConnected = connected;
 
-  operatorConnected = connected;
+    if (connected) {
+        lastOperatorResponse = Date.now();
 
-  if (connected) {
+        connectionGuide.hidden = true;
+        deviceScreen.hidden = false;
 
-    lastOperatorResponse = Date.now();
+        statusLabel.textContent = "操作画面 接続済み";
 
-    connectionGuide.hidden = true;
-    deviceScreen.hidden = false;
+        statusLabel.classList.remove("disconnected");
+        statusLabel.classList.add("connected");
 
-    statusLabel.textContent = "操作画面 接続済み";
+        if (!awaitingAnswer && !isListening) {
+            resetToIdle();
+        }
+    } else {
+        if (recognition && isListening) {
+            try {
+                recognition.stop();
+            } catch {
+                // ignore
+            }
+        }
 
-    statusLabel.classList.remove("disconnected");
-    statusLabel.classList.add("connected");
+        isListening = false;
+        awaitingAnswer = false;
 
-    if (!awaitingAnswer && !isListening) {
-      resetToIdle();
+        connectionGuide.hidden = false;
+        deviceScreen.hidden = true;
+
+        statusLabel.textContent = "操作画面 未接続";
+
+        statusLabel.classList.remove("connected");
+        statusLabel.classList.add("disconnected");
     }
-
-  } else {
-
-    if (recognition && isListening) {
-      try {
-        recognition.stop();
-      } catch {
-        // ignore
-      }
-    }
-
-    isListening = false;
-    awaitingAnswer = false;
-
-    connectionGuide.hidden = false;
-    deviceScreen.hidden = true;
-
-    statusLabel.textContent = "操作画面 未接続";
-
-    statusLabel.classList.remove("connected");
-    statusLabel.classList.add("disconnected");
-  }
 }
 
 function pingOperator() {
-
-  channel.postMessage({
-    type: "operator-ping",
-  });
+    channel.postMessage({
+        type: "operator-ping",
+    });
 }
 
 // 2秒ごとにoperatorの生存確認
 setInterval(() => {
+    pingOperator();
 
-  pingOperator();
-
-  if (
-    operatorConnected &&
-    Date.now() - lastOperatorResponse > 5000
-  ) {
-    setOperatorConnected(false);
-  }
-
+    if (operatorConnected && Date.now() - lastOperatorResponse > 5000) {
+        setOperatorConnected(false);
+    }
 }, 2000);
 
 // ------------------------------------------------------------------
@@ -112,55 +100,45 @@ setInterval(() => {
 // ------------------------------------------------------------------
 
 function setState(state, text = "") {
+    Object.entries(views).forEach(([name, element]) => {
+        element.hidden = name !== state;
+    });
 
-  Object.entries(views).forEach(([name, element]) => {
-    element.hidden = name !== state;
-  });
-
-  if (state === "answer") {
-    answerText.textContent = text;
-  }
+    if (state === "answer") {
+        answerText.textContent = text;
+    }
 }
 
 function setIdleMessage(text) {
-
-  if (idleText) {
-    idleText.textContent = text;
-  }
+    if (idleText) {
+        idleText.textContent = text;
+    }
 }
 
 function setThinkingMessage(text) {
-
-  if (thinkingText) {
-    thinkingText.textContent = text;
-  }
+    if (thinkingText) {
+        thinkingText.textContent = text;
+    }
 }
 
 function resetToIdle() {
+    awaitingAnswer = false;
 
-  awaitingAnswer = false;
+    setState("idle");
 
-  setState("idle");
+    statusLabel.textContent = operatorConnected ? "待機中" : "操作画面 未接続";
 
-  statusLabel.textContent =
-    operatorConnected
-      ? "待機中"
-      : "操作画面 未接続";
-
-  setIdleMessage(
-    SR
-      ? "タップして質問する"
-      : "このブラウザは音声入力に対応していません"
-  );
+    setIdleMessage(
+        SR ? "タップして質問する" : "このブラウザは音声入力に対応していません",
+    );
 }
 
 function setListeningState() {
+    setState("idle");
 
-  setState("idle");
+    statusLabel.textContent = "聞き取り中";
 
-  statusLabel.textContent = "聞き取り中";
-
-  setIdleMessage("聞き取っています…");
+    setIdleMessage("聞き取っています…");
 }
 
 // ------------------------------------------------------------------
@@ -168,30 +146,23 @@ function setListeningState() {
 // ------------------------------------------------------------------
 
 async function ensureMicPermission() {
+    if (hasMicPermission) return;
 
-  if (hasMicPermission) return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        throw new Error(
+            "このブラウザではマイク機能を利用できません。Chrome / Edgeを推奨します。",
+        );
+    }
 
-  if (
-    !navigator.mediaDevices ||
-    !navigator.mediaDevices.getUserMedia
-  ) {
-    throw new Error(
-      "このブラウザではマイク機能を利用できません。Chrome / Edgeを推奨します。"
-    );
-  }
-
-  const stream =
-    await navigator.mediaDevices.getUserMedia({
-      audio: true,
+    const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
     });
 
-  hasMicPermission = true;
+    hasMicPermission = true;
 
-  // SpeechRecognition側で使用するため、
-  // 権限確認後のstream自体は閉じる
-  stream
-    .getTracks()
-    .forEach((track) => track.stop());
+    // SpeechRecognition側で使用するため、
+    // 権限確認後のstream自体は閉じる
+    stream.getTracks().forEach((track) => track.stop());
 }
 
 // ------------------------------------------------------------------
@@ -199,126 +170,102 @@ async function ensureMicPermission() {
 // ------------------------------------------------------------------
 
 function buildRecognition() {
+    if (!SR) return null;
 
-  if (!SR) return null;
+    if (recognition) return recognition;
 
-  if (recognition) return recognition;
+    recognition = new SR();
 
-  recognition = new SR();
+    recognition.lang = "ja-JP";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
 
-  recognition.lang = "ja-JP";
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
+    recognition.onstart = () => {
+        isListening = true;
+        awaitingAnswer = false;
 
-  recognition.onstart = () => {
+        setListeningState();
+    };
 
-    isListening = true;
-    awaitingAnswer = false;
+    recognition.onresult = (event) => {
+        const transcript = Array.from(event.results)
+            .map((result) => result[0]?.transcript || "")
+            .join("")
+            .trim();
 
-    setListeningState();
-  };
+        if (!transcript) {
+            resetToIdle();
 
-  recognition.onresult = (event) => {
+            return;
+        }
 
-    const transcript =
-      Array.from(event.results)
-        .map(
-          (result) =>
-            result[0]?.transcript || ""
-        )
-        .join("")
-        .trim();
+        awaitingAnswer = true;
 
-    if (!transcript) {
+        setState("thinking");
 
-      resetToIdle();
+        statusLabel.textContent = "確認中";
 
-      return;
-    }
+        setThinkingMessage(`「${transcript}」を確認しています…`);
 
-    awaitingAnswer = true;
+        // operator.htmlへ送信
+        channel.postMessage({
+            type: "question",
+            text: transcript,
+        });
+    };
 
-    setState("thinking");
+    recognition.onerror = (event) => {
+        isListening = false;
+        awaitingAnswer = false;
 
-    statusLabel.textContent = "確認中";
+        let message = "音声入力に失敗しました";
 
-    setThinkingMessage(
-      `「${transcript}」を確認しています…`
-    );
+        switch (event.error) {
+            case "not-allowed":
+                message = "マイクの使用が許可されていません";
 
-    // operator.htmlへ送信
-    channel.postMessage({
-      type: "question",
-      text: transcript,
-    });
-  };
+                break;
 
-  recognition.onerror = (event) => {
+            case "no-speech":
+                message = "音声が聞き取れませんでした";
 
-    isListening = false;
-    awaitingAnswer = false;
+                break;
 
-    let message =
-      "音声入力に失敗しました";
+            case "audio-capture":
+                message = "マイクが見つかりません";
 
-    switch (event.error) {
+                break;
 
-      case "not-allowed":
+            case "network":
+                message = "音声認識でネットワークエラーが発生しました";
 
-        message =
-          "マイクの使用が許可されていません";
+                break;
 
-        break;
+            default:
+                message = `音声入力エラー: ${event.error}`;
+        }
 
-      case "no-speech":
+        setState("idle");
 
-        message =
-          "音声が聞き取れませんでした";
+        setIdleMessage(message);
 
-        break;
+        statusLabel.textContent = "待機中";
+    };
 
-      case "audio-capture":
+    recognition.onend = () => {
+        isListening = false;
 
-        message =
-          "マイクが見つかりません";
+        // 回答待ちなら確認画面を維持
+        if (awaitingAnswer) {
+            return;
+        }
 
-        break;
+        if (operatorConnected) {
+            resetToIdle();
+        }
+    };
 
-      case "network":
-
-        message =
-          "音声認識でネットワークエラーが発生しました";
-
-        break;
-
-      default:
-
-        message =
-          `音声入力エラー: ${event.error}`;
-    }
-
-    setState("idle");
-
-    setIdleMessage(message);
-
-    statusLabel.textContent = "待機中";
-  };
-
-  recognition.onend = () => {
-
-    isListening = false;
-
-    // 回答待ちなら確認画面を維持
-    if (awaitingAnswer) {
-      return;
-    }
-
-    if (operatorConnected) {
-      resetToIdle();
-    }
-  };
-
-  return recognition;
+    return recognition;
 }
 
 // ------------------------------------------------------------------
@@ -326,135 +273,101 @@ function buildRecognition() {
 // ------------------------------------------------------------------
 
 async function startListening() {
+    if (!operatorConnected) {
+        setOperatorConnected(false);
 
-  if (!operatorConnected) {
+        return;
+    }
 
-    setOperatorConnected(false);
+    if (!SR) {
+        setIdleMessage("このブラウザは音声入力に対応していません");
 
-    return;
-  }
+        return;
+    }
 
-  if (!SR) {
+    if (isListening) return;
 
-    setIdleMessage(
-      "このブラウザは音声入力に対応していません"
-    );
+    try {
+        setIdleMessage("マイクの許可を確認しています…");
 
-    return;
-  }
+        await ensureMicPermission();
 
-  if (isListening) return;
+        const recog = buildRecognition();
 
-  try {
+        if (!recog) return;
 
-    setIdleMessage(
-      "マイクの許可を確認しています…"
-    );
+        recog.start();
+    } catch (error) {
+        setState("idle");
 
-    await ensureMicPermission();
+        setIdleMessage(`マイクを使用できません: ${error.message}`);
 
-    const recog = buildRecognition();
-
-    if (!recog) return;
-
-    recog.start();
-
-  } catch (error) {
-
-    setState("idle");
-
-    setIdleMessage(
-      `マイクを使用できません: ${error.message}`
-    );
-
-    statusLabel.textContent = "待機中";
-  }
+        statusLabel.textContent = "待機中";
+    }
 }
 
 // ------------------------------------------------------------------
 // BroadcastChannel
 // ------------------------------------------------------------------
 
-channel.addEventListener(
-  "message",
-  (event) => {
-
+channel.addEventListener("message", (event) => {
     const msg = event.data;
 
-    if (
-      !msg ||
-      typeof msg !== "object"
-    ) {
-      return;
+    if (!msg || typeof msg !== "object") {
+        return;
     }
 
     switch (msg.type) {
+        // operatorが起動した
+        case "operator-ready":
+            setOperatorConnected(true);
 
-      // operatorが起動した
-      case "operator-ready":
+            break;
 
-        setOperatorConnected(true);
+        // 生存確認
+        case "operator-pong":
+            setOperatorConnected(true);
 
-        break;
+            break;
 
-      // 生存確認
-      case "operator-pong":
+        // operatorが閉じられた
+        case "operator-closed":
+            setOperatorConnected(false);
 
-        setOperatorConnected(true);
+            break;
 
-        break;
+        // 回答
+        case "answer":
+            awaitingAnswer = false;
 
-      // operatorが閉じられた
-      case "operator-closed":
+            setState("answer", msg.text || "");
 
-        setOperatorConnected(false);
+            statusLabel.textContent = "回答";
 
-        break;
+            break;
 
-      // 回答
-      case "answer":
+        // operator側から確認中にする
+        case "thinking":
+            awaitingAnswer = true;
 
-        awaitingAnswer = false;
+            setState("thinking");
 
-        setState(
-          "answer",
-          msg.text || ""
-        );
+            statusLabel.textContent = "確認中";
 
-        statusLabel.textContent =
-          "回答";
+            setThinkingMessage("回答を準備しています…");
 
-        break;
+            break;
 
-      // operator側から確認中にする
-      case "thinking":
+        // 待機状態へ戻す
+        case "idle":
+            resetToIdle();
 
-        awaitingAnswer = true;
+            break;
 
-        setState("thinking");
-
-        statusLabel.textContent =
-          "確認中";
-
-        setThinkingMessage(
-          "回答を準備しています…"
-        );
-
-        break;
-
-      // 待機状態へ戻す
-      case "idle":
-
-        resetToIdle();
-
-        break;
-
-      default:
-
-        break;
+        default:
+            break;
     }
-  }
-);
+});
 
 // ------------------------------------------------------------------
 // UI操作
@@ -465,41 +378,30 @@ views.idle.style.cursor = "pointer";
 
 views.idle.tabIndex = 0;
 
-views.idle.addEventListener(
-  "click",
-  startListening
-);
+views.idle.addEventListener("click", startListening);
 
-views.idle.addEventListener(
-  "keydown",
-  (event) => {
+views.idle.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
 
-    if (
-      event.key === "Enter" ||
-      event.key === " "
-    ) {
-
-      event.preventDefault();
-
-      startListening();
+        startListening();
     }
-  }
-);
+});
 
 // 操作画面を開く
-openOperatorBtn.addEventListener(
-  "click",
-  () => {
+// openOperatorBtn.addEventListener(
+//   "click",
+//   () => {
 
-    window.open(
-      "operator.html",
-      "rehavision-woz-operator"
-    );
+//     window.open(
+//       "operator.html",
+//       "rehavision-woz-operator"
+//     );
 
-    statusLabel.textContent =
-      "操作画面 接続待ち";
+//     statusLabel.textContent =
+//       "操作画面 接続待ち";
 
-    // 少し待って確認
-    setTimeout(
-      pingOperator,
-      500
+//     // 少し待って確認
+//     setTimeout(
+//       pingOperator,
+//       500

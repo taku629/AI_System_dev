@@ -611,7 +611,10 @@ kbd {
 .device-status.disconnected {
     color: #f87171;
 }
-
+.open-operator-btn {
+    display: inline-block;
+    text-decoration: none;
+}
 /* Display補足 */
 
 .display-help {
