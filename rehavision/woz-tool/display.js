@@ -36,6 +36,7 @@ let awaitingAnswer = false;
 
 let operatorConnected = false;
 let lastOperatorResponse = 0;
+let answerWaitTimer = null;
 
 // ------------------------------------------------------------------
 // 接続状態
@@ -122,6 +123,10 @@ function setThinkingMessage(text) {
 }
 
 function resetToIdle() {
+  clearTimeout(answerWaitTimer);
+    answerWaitTimer = null;
+
+    //awaitingAnswer = false;
     awaitingAnswer = false;
 
     setState("idle");
@@ -212,6 +217,15 @@ function buildRecognition() {
             type: "question",
             text: transcript,
         });
+        clearTimeout(answerWaitTimer);
+
+        answerWaitTimer = setTimeout(() => {
+            if (!awaitingAnswer) return;
+
+            setThinkingMessage(
+                "操作画面で回答を選択し、「送信」を押してください"
+            );
+        }, 10000);
     };
 
     recognition.onerror = (event) => {
@@ -338,6 +352,15 @@ channel.addEventListener("message", (event) => {
 
         // 回答
         case "answer":
+            clearTimeout(answerWaitTimer);
+
+            awaitingAnswer = false;
+
+            setState("answer", msg.text || "");
+
+            statusLabel.textContent = "回答";
+
+            break;
             awaitingAnswer = false;
 
             setState("answer", msg.text || "");
