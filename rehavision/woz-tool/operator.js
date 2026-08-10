@@ -238,9 +238,9 @@ function renderLog() {
 
     if (log.length === 0) {
         const tr = document.createElement("tr");
-        if (entry.time === "サンプル") {
-            tr.classList.add("sample-row");
-        }
+        // if (entry.time === "サンプル") {
+        //     tr.classList.add("sample-row");
+        // }
         tr.className = "empty-row";
         const td = document.createElement("td");
         td.colSpan = 6;
@@ -253,6 +253,10 @@ function renderLog() {
 
     log.forEach((entry, index) => {
         const tr = document.createElement("tr");
+
+        if (entry.time === "サンプル") {
+            tr.classList.add("sample-row");
+        }
 
         tr.appendChild(staticCell(String(entry.id)));
         tr.appendChild(staticCell(entry.time));
