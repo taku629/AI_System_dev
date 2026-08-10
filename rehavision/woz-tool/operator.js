@@ -5,6 +5,49 @@
 const channel = new BroadcastChannel("rehavision-woz");
 const STORAGE_KEY = "rehavision-woz-log";
 
+const DEFAULT_LOG = [
+    {
+        id: 1,
+        time: "サンプル",
+        question: "現在の状態はどうですか？",
+        answer:
+            "現在は右大腿骨頸部骨折の術後・回復期です。歩行時に軽度のふらつきがあり、見守りが必要です。",
+        category: "情報提示",
+    },
+    {
+        id: 2,
+        time: "サンプル",
+        question: "リハビリの効果は出ていますか？",
+        answer:
+            "歩行距離は10mから45mまで改善しています。片脚立位も2秒から8秒まで伸びています。",
+        category: "訓練経過",
+    },
+    {
+        id: 3,
+        time: "サンプル",
+        question: "訓練はどこまで進んでいますか？",
+        answer:
+            "理学療法は全10回のうち8回まで実施しており、現在の達成度は80%です。",
+        category: "訓練経過",
+    },
+    {
+        id: 4,
+        time: "サンプル",
+        question: "一人で歩いても大丈夫ですか？",
+        answer:
+            "現在は単独歩行では転倒のリスクがあるため、歩行時には見守りが必要です。",
+        category: "注意事項",
+    },
+    {
+        id: 5,
+        time: "サンプル",
+        question: "どのくらい歩けるようになりましたか？",
+        answer:
+            "歩行距離は以前の10mから45mまで改善しています。",
+        category: "情報提示",
+    },
+];
+
 // 頻出フレーズのグループ名から、コーパス上のカテゴリを推測するための対応表
 const CATEGORY_HINT = {
     状態確認: "情報提示",
@@ -195,6 +238,9 @@ function renderLog() {
 
     if (log.length === 0) {
         const tr = document.createElement("tr");
+        if (entry.time === "サンプル") {
+            tr.classList.add("sample-row");
+        }
         tr.className = "empty-row";
         const td = document.createElement("td");
         td.colSpan = 6;
@@ -301,10 +347,19 @@ function persist() {
 function restore() {
     try {
         const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) log = JSON.parse(saved);
+
+        // このブラウザですでにデータを保存している場合
+        if (saved !== null) {
+            log = JSON.parse(saved);
+            return;
+        }
+
+        // 初めて開いたブラウザではサンプルデータを表示
+        log = DEFAULT_LOG.map((entry) => ({ ...entry }));
     } catch (err) {
         console.warn("ログの復元に失敗しました", err);
-        log = [];
+
+        log = DEFAULT_LOG.map((entry) => ({ ...entry }));
     }
 }
 

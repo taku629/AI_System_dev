@@ -647,3 +647,17 @@ kbd {
 .ask-again-btn:hover {
     background: rgba(255, 255, 255, 0.08);
 }
+
+/* サンプルコーパス */
+.sample-row {
+    background: rgba(94, 234, 212, 0.035);
+}
+
+.sample-row td:first-child,
+.sample-row td:nth-child(2) {
+    color: #5eead4;
+}
+
+.sample-row td:nth-child(2) {
+    font-weight: 700;
+}
