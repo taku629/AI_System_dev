@@ -3,19 +3,51 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>Rehavision — ユーザ役用ディスプレイ</title>
+        <title>RehaVision — ユーザ役用ディスプレイ</title>
         <link rel="stylesheet" href="woz.css" />
     </head>
+
     <body class="display-body">
         <div class="device-frame">
             <div class="device-header">
-                <span class="device-logo"
-                    >Reha<span class="accent">Vision</span></span
-                >
-                <span class="device-status" id="device-status">待機中</span>
+                <span class="device-logo">
+                    Reha<span class="accent">Vision</span>
+                </span>
+
+                <span class="device-status disconnected" id="device-status">
+                    操作画面 未接続
+                </span>
             </div>
 
-            <div class="device-screen" id="device-screen">
+            <!-- 操作画面が開かれていないとき -->
+            <div class="connection-guide" id="connection-guide">
+                <div class="connection-icon">⚠</div>
+
+                <h1>操作画面を開いてください</h1>
+
+                <p>この画面は利用者用ディスプレイです。</p>
+
+                <p>
+                    デモを開始するには、
+                    <strong>同じブラウザ</strong>で操作画面を開いてください。
+                </p>
+
+                <button
+                    type="button"
+                    class="open-operator-btn"
+                    id="open-operator-btn"
+                >
+                    操作画面を開く
+                </button>
+
+                <p class="connection-note">
+                    ※ 別のPC・スマートフォン・別ブラウザでは接続できません。
+                </p>
+            </div>
+
+            <!-- 接続後に表示 -->
+            <div class="device-screen" id="device-screen" hidden>
+                <!-- 待機 -->
                 <div class="idle-view" id="idle-view">
                     <div class="mic-icon" aria-hidden="true">
                         <svg
@@ -29,22 +61,42 @@
                             stroke-linejoin="round"
                         >
                             <rect x="9" y="2" width="6" height="12" rx="3" />
+
                             <path d="M5 10a7 7 0 0 0 14 0" />
+
                             <line x1="12" y1="17" x2="12" y2="22" />
                         </svg>
                     </div>
-                    <p class="idle-text">タップして話す</p>
+
+                    <p class="idle-text">タップして質問する</p>
+
+                    <p class="display-help">マイクを使って音声で質問できます</p>
                 </div>
 
+                <!-- 確認中 -->
                 <div class="thinking-view" id="thinking-view" hidden>
                     <div class="dots" aria-hidden="true">
-                        <span></span><span></span><span></span>
+                        <span></span>
+                        <span></span>
+                        <span></span>
                     </div>
-                    <p class="thinking-text">確認しています…</p>
+
+                    <p class="thinking-text">回答を準備しています…</p>
+
+                    <p class="display-help">担当者が質問内容を確認しています</p>
                 </div>
 
+                <!-- 回答 -->
                 <div class="answer-view" id="answer-view" hidden>
                     <p class="answer-text" id="answer-text"></p>
+
+                    <button
+                        type="button"
+                        class="ask-again-btn"
+                        id="ask-again-btn"
+                    >
+                        もう一度質問する
+                    </button>
                 </div>
             </div>
         </div>

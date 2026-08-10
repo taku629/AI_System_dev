@@ -382,30 +382,54 @@ function setLinkStatus(connected) {
 
 channel.addEventListener("message", (event) => {
     const msg = event.data;
-    if (!msg || typeof msg !== "object") return;
 
-    if (msg.type === "display-ready" || msg.type === "pong") {
-        setLinkStatus(true);
+    if (!msg || typeof msg !== "object") {
         return;
     }
 
+    // Display起動
+    if (msg.type === "display-ready") {
+        setLinkStatus(true);
+
+        channel.postMessage({
+            type: "operator-ready",
+        });
+
+        return;
+    }
+
+    // Displayからoperatorの接続確認
+    if (msg.type === "operator-ping") {
+        channel.postMessage({
+            type: "operator-pong",
+        });
+
+        return;
+    }
+
+    // Display終了
     if (msg.type === "display-closed") {
         setLinkStatus(false);
+
         return;
     }
 
-    // display.html から音声認識された質問を受け取る
+    // Displayで認識した質問
     if (msg.type === "question") {
         setLinkStatus(true);
+
         els.questionInput.value = msg.text || "";
+
         els.questionInput.focus();
 
-        // 受け取ったら display 側を「確認中」にしておく
-        channel.postMessage({ type: "thinking" });
+        // Displayを回答待ち画面にする
+        channel.postMessage({
+            type: "thinking",
+        });
+
         return;
     }
 });
-
 /* ------------------------------------------------------------------
    イベント配線
    ------------------------------------------------------------------ */
@@ -467,3 +491,15 @@ loadVoices();
 restore();
 renderLog();
 channel.postMessage({ type: "ping" });
+
+// operator起動をDisplay側へ通知
+channel.postMessage({
+    type: "operator-ready",
+});
+
+// operatorを閉じたことを通知
+window.addEventListener("beforeunload", () => {
+    channel.postMessage({
+        type: "operator-closed",
+    });
+});
